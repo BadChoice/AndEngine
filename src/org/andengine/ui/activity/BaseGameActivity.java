@@ -64,7 +64,14 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 	private boolean mGameCreated;
 	private boolean mCreateGameCalled;
 	private boolean mOnReloadResourcesScheduled;
+	
+	private boolean mShouldFastResume = false;
 
+	
+	public void setFastReload(final boolean pShouldFastResume){
+		mShouldFastResume = pShouldFastResume;
+	}
+	
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -212,7 +219,8 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 		super.onResume();
 
 		this.acquireWakeLock();
-		this.mRenderSurfaceView.onResume();
+		if(mShouldFastResume)
+			this.mRenderSurfaceView.onResume();
 	}
 
 	@Override
@@ -252,7 +260,8 @@ public abstract class BaseGameActivity extends BaseActivity implements IGameInte
 
 		super.onPause();
 
-		this.mRenderSurfaceView.onPause();
+		if(mShouldFastResume)
+			this.mRenderSurfaceView.onPause();
 		this.releaseWakeLock();
 
 		if (!this.mGamePaused) {
